@@ -19,11 +19,7 @@ initializeApp({
   credential: credential.cert(FIREBASE_SERVICE_ACCOUNT_KEY),
   databaseURL: FIREBASE_DATABASE_URL,
 });
-const startTime = dayjs().startOf("hour");
-if (dayjs().minute() > 30) {
-  startTime.set("minute", 30);
-}
-console.log(startTime.toDate());
+let startTime = dayjs().subtract(15, "minute");
 const collection = firestore()
   .collection("subscribers")
   .where("date", ">=", startTime.toDate());
