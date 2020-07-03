@@ -19,14 +19,14 @@ initializeApp({
   credential: credential.cert(FIREBASE_SERVICE_ACCOUNT_KEY),
   databaseURL: FIREBASE_DATABASE_URL,
 });
-const startTime = new Date();
-startTime.setHours(-1);
-startTime.setMinutes(0);
-startTime.setSeconds(0);
-startTime.setMilliseconds(0);
+const startTime = dayjs().startOf("hour");
+if (dayjs().minute() > 30) {
+  startTime.set("minute", 30);
+}
+console.log(startTime);
 const collection = firestore()
   .collection("subscribers")
-  .where("date", ">=", startTime);
+  .where("date", ">=", startTime.toDate());
 
 const getData = async () => {
   const snapshot = await collection.get();
