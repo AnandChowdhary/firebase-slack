@@ -1,0 +1,28 @@
+name: Firebase Slack
+on:
+  push:
+    branches:
+      - master
+  schedule:
+    - cron: "*/30 * * * *"
+  repository_dispatch:
+    types: [update]
+jobs:
+  release:
+    name: Update
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - name: Install dependencies
+        run: npm ci
+      - name: Post Firebase updates to Slack
+        run: npm run run
+        env:
+          FIREBASE_SERVICE_ACCOUNT_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
+          SLACK_WEBHOOK_KEY: ${{ secrets.SLACK_WEBHOOK_KEY }}
+          FIREBASE_DATABASE_URL: ${{ secrets.FIREBASE_DATABASE_URL }}

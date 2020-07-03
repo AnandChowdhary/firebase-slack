@@ -10,7 +10,7 @@ import axios from "axios";
 config();
 
 const FIREBASE_SERVICE_ACCOUNT_KEY: ServiceAccount = JSON.parse(
-  process.env.FIREBASE_SERVICE_ACCOUNT_KEY
+  process.env.FIREBASE_SERVICE_ACCOUNT_KEY ?? ""
 );
 const SLACK_WEBHOOK_KEY = process.env.SLACK_WEBHOOK_KEY;
 const FIREBASE_DATABASE_URL = process.env.FIREBASE_DATABASE_URL;
@@ -23,7 +23,7 @@ const startTime = dayjs().startOf("hour");
 if (dayjs().minute() > 30) {
   startTime.set("minute", 30);
 }
-console.log(startTime);
+console.log(startTime.toDate());
 const collection = firestore()
   .collection("subscribers")
   .where("date", ">=", startTime.toDate());
