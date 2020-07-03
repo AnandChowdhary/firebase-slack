@@ -4,7 +4,8 @@
   "description": "Automagically post new records from a Firebase database on Slack in near real-time, powered by GitHub Actions. The workflow runs every 5 minutes, finds new records, and sends a message to your preferred Slack channel.",
   "main": "index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "run": "ts-node index.ts"
   },
   "repository": {
     "type": "git",
