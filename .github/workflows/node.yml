@@ -21,7 +21,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Post Firebase updates to Slack
-        run: npm run run
+        run: ts-node index.ts
         env:
           FIREBASE_SERVICE_ACCOUNT_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
           SLACK_WEBHOOK_KEY: ${{ secrets.SLACK_WEBHOOK_KEY }}
