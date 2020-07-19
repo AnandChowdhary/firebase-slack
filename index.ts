@@ -21,7 +21,7 @@ initializeApp({
 });
 let startTime = dayjs().subtract(15, "minute");
 const collection = firestore()
-  .collection("subscribers")
+  .collection("subscribers-v2")
   .where("date", ">=", startTime.toDate());
 
 const getData = async () => {
