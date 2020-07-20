@@ -56,15 +56,15 @@ export const postToSlack = async (data: any) => {
           },
           {
             type: "mrkdwn",
-            text: `*Phone* \n ${data.phone}`,
+            text: `*Phone* \n ${data.phone || "_None_"}`,
           },
           {
             type: "mrkdwn",
-            text: `*Period* \n ${data.subscriptionPeriod} years`,
+            text: `*Period* \n ${data.subscriptionPeriod || "_None_"} years`,
           },
           {
             type: "mrkdwn",
-            text: `*Budget* \n CHF ${data.budget}`,
+            text: `*Budget* \n CHF ${data.budget || "_None_"}`,
           },
         ],
       },
