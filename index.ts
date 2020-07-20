@@ -79,7 +79,7 @@ export const postToSlack = async (data: any) => {
 const firebaseSlack = async () => {
   const data = await getData();
   for await (const item of data) {
-    postToSlack(item);
+    if (item.email) postToSlack(item);
   }
 };
 
