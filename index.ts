@@ -35,6 +35,7 @@ const getData = async () => {
 
 /** Post a message to a Slack channel */
 export const postToSlack = async (data: any) => {
+  if (data.dev) return;
   const payload = {
     username: "Koj Bot",
     icon_url:
