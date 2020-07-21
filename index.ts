@@ -60,7 +60,7 @@ export const postToSlack = async (data: any) => {
           },
           {
             type: "mrkdwn",
-            text: `*Period* \n ${data.subscriptionPeriod || "_None_"} years`,
+            text: `*Period* \n ${data.period || "_None_"} years`,
           },
           {
             type: "mrkdwn",
