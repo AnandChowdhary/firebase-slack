@@ -20,15 +20,22 @@ initializeApp({
   databaseURL: FIREBASE_DATABASE_URL,
 });
 let startTime = dayjs().subtract(15, "minute");
-const collection = firestore()
+const subscribersCollection = firestore()
   .collection("subscribers-v2")
+  .where("date", ">=", startTime.toDate());
+const realEstateCollection = firestore()
+  .collection("real-estate-managers")
   .where("date", ">=", startTime.toDate());
 
 const getData = async () => {
-  const snapshot = await collection.get();
+  const subscribersCollectionSnapshot = await subscribersCollection.get();
+  const realEstateCollectionSnapshot = await realEstateCollection.get();
   const data: any[] = [];
-  snapshot.forEach((record) => {
+  subscribersCollectionSnapshot.forEach((record) => {
     data.push(record.data());
+  });
+  realEstateCollectionSnapshot.forEach((record) => {
+    data.push({ ...record.data(), realEstate: true });
   });
   return data;
 };
@@ -45,7 +52,7 @@ export const postToSlack = async (data: any) => {
         type: "section",
         text: {
           type: "mrkdwn",
-          text: `*${data.name}* just signed up!`,
+          text: data.realEstate "Real estate manager lead from *${data.name}*" ? `*${data.name}* just signed up!`,
         },
       },
       {
