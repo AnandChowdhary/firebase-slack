@@ -55,7 +55,7 @@ export const postToSlack = async (data: any) => {
         type: "section",
         text: {
           type: "mrkdwn",
-          text: data.realEstate ? "Real estate manager lead from *${data.name}*" : `*${data.name}* just signed up!`,
+          text: data.realEstate ? `Real estate manager lead from *${data.name}*` : `*${data.name}* just signed up!`,
         },
       },
       {
