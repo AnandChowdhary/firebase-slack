@@ -69,11 +69,11 @@ export const postToSlack = async (data: any) => {
             type: "mrkdwn",
             text: `*Phone* \n ${data.phone || "_None_"}`,
           },
-          {
+          data.realEstate ? undefined : {
             type: "mrkdwn",
             text: `*Period* \n ${data.period || "_None_"} years`,
           },
-          {
+          data.realEstate ? undefined : {
             type: "mrkdwn",
             text: `*Budget* \n CHF ${data.budget || "_None_"}`,
           },
