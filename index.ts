@@ -19,10 +19,13 @@ initializeApp({
   credential: credential.cert(FIREBASE_SERVICE_ACCOUNT_KEY),
   databaseURL: FIREBASE_DATABASE_URL,
 });
+
 let startTime = dayjs().subtract(15, "minute");
+
 const subscribersCollection = firestore()
   .collection("subscribers-v2")
   .where("date", ">=", startTime.toDate());
+
 const realEstateCollection = firestore()
   .collection("real-estate-managers")
   .where("date", ">=", startTime.toDate());
@@ -52,7 +55,7 @@ export const postToSlack = async (data: any) => {
         type: "section",
         text: {
           type: "mrkdwn",
-          text: data.realEstate "Real estate manager lead from *${data.name}*" ? `*${data.name}* just signed up!`,
+          text: data.realEstate ? "Real estate manager lead from *${data.name}*" : `*${data.name}* just signed up!`,
         },
       },
       {
