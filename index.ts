@@ -5,7 +5,6 @@ import {
   ServiceAccount,
   firestore,
 } from "firebase-admin";
-import dayjs from "dayjs";
 import axios from "axios";
 config();
 
@@ -20,28 +19,8 @@ initializeApp({
   databaseURL: FIREBASE_DATABASE_URL,
 });
 
-let startTime = dayjs().subtract(15, "minute");
-
-const subscribersCollection = firestore()
-  .collection("subscribers-v2")
-  .where("date", ">=", startTime.toDate());
-
-const realEstateCollection = firestore()
-  .collection("real-estate-managers")
-  .where("date", ">=", startTime.toDate());
-
-const getData = async () => {
-  const subscribersCollectionSnapshot = await subscribersCollection.get();
-  const realEstateCollectionSnapshot = await realEstateCollection.get();
-  const data: any[] = [];
-  subscribersCollectionSnapshot.forEach((record) => {
-    data.push(record.data());
-  });
-  realEstateCollectionSnapshot.forEach((record) => {
-    data.push({ ...record.data(), realEstate: true });
-  });
-  return data;
-};
+const subscribers = firestore().collection("subscribers-v2");
+const realEstate = firestore().collection("real-estate-managers");
 
 /** Post a message to a Slack channel */
 export const postToSlack = async (data: any) => {
@@ -85,11 +64,24 @@ export const postToSlack = async (data: any) => {
   );
 };
 
+const sent: string[] = [];
 const firebaseSlack = async () => {
-  const data = await getData();
-  for await (const item of data) {
-    if (item.email) postToSlack(item);
+  for await (const item of [subscribers, realEstate]) {
+    const docs = await item.get();
+    docs.forEach((doc) => sent.push(doc.id));
   }
+  [subscribers, realEstate].forEach((item) => {
+    item.onSnapshot((snapshot) => {
+      snapshot.docs.forEach((doc) => {
+        const data = doc.data();
+        if (doc.id && !sent.includes(doc.id) && data.email && !data.dev) {
+          sent.push(doc.id);
+          console.log("Sending", doc.id);
+          postToSlack(data);
+        }
+      });
+    });
+  });
 };
 
 firebaseSlack();
