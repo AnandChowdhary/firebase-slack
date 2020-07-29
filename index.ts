@@ -79,7 +79,6 @@ export const postToSlack = async (data: any) => {
       },
     ],
   };
-  return console.log(JSON.stringify(payload, null, 2));
   await axios.post(
     `https://hooks.slack.com/services/${SLACK_WEBHOOK_KEY}`,
     payload
