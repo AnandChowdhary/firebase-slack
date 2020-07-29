@@ -1,28 +1,30 @@
-name: Firebase Slack
+name: Node CI
 on:
   push:
     branches:
       - master
-  schedule:
-    - cron: "*/10 * * * *"
-  repository_dispatch:
-    types: [update]
 jobs:
   release:
-    name: Update
+    name: Build, test, and release
     runs-on: ubuntu-18.04
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v1
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
           node-version: 14
       - name: Install dependencies
         run: npm ci
-      - name: Post Firebase updates to Slack
-        run: npm run run
+      - name: Build
+        run: npm run build
+      - name: Release
+        run: npx semantic-release
         env:
-          FIREBASE_SERVICE_ACCOUNT_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
-          SLACK_WEBHOOK_KEY: ${{ secrets.SLACK_WEBHOOK_KEY }}
-          FIREBASE_DATABASE_URL: ${{ secrets.FIREBASE_DATABASE_URL }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+      - name: Trigger webhook
+        uses: joelwmale/webhook-action@master
+        env:
+          WEBHOOK_URL: ${{ secrets.BUILD_WEBHOOK }}
+          data: "Trigger"
