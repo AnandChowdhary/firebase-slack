@@ -55,32 +55,31 @@ export const postToSlack = async (data: any) => {
         type: "section",
         text: {
           type: "mrkdwn",
-          text: data.realEstate ? `Real estate manager lead from *${data.name}*` : `*${data.name}* just signed up!`,
+          text: data.realEstate
+            ? `Real estate manager lead from *${data.name || "a user"}*`
+            : `*${data.name || "A user"}* just signed up!`,
         },
       },
       {
         type: "section",
-        fields: [
-          {
-            type: "mrkdwn",
-            text: `*Email* \n ${data.email}`,
-          },
-          {
-            type: "mrkdwn",
-            text: `*Phone* \n ${data.phone || "_None_"}`,
-          },
-          data.realEstate ? undefined : {
-            type: "mrkdwn",
-            text: `*Period* \n ${data.period || "_None_"} years`,
-          },
-          data.realEstate ? undefined : {
-            type: "mrkdwn",
-            text: `*Budget* \n CHF ${data.budget || "_None_"}`,
-          },
-        ],
+        fields: Object.keys(data).map((key) => ({
+          type: "mrkdwn",
+          text: `*${key}* \n ${
+            Array.isArray(data[key])
+              ? data[key].join(", ")
+              : data[key]._seconds
+              ? new Date(data[key]._seconds * 1000).toLocaleString("en-CH", {
+                  timeZone: "Europe/Zurich",
+                })
+              : typeof data[key] === "object"
+              ? JSON.stringify(data[key])
+              : data[key]
+          }`,
+        })),
       },
     ],
   };
+  return console.log(JSON.stringify(payload, null, 2));
   await axios.post(
     `https://hooks.slack.com/services/${SLACK_WEBHOOK_KEY}`,
     payload
