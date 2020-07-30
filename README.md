@@ -1,6 +1,6 @@
 # 🔥🔔 Firebase Slack
 
-Automagically post new records from a Firebase database on Slack in near real-time, powered by GitHub Actions. The workflow runs every 5 minutes, finds new records, and sends a message to your preferred Slack channel.
+Automagically post new records from a Firebase Cloud Firestore database on Slack in real-time using a Node.js script. The script listens to changes to the database using the `onSnapshot` method and sends a message to your preferred Slack channel when a new record is created.
 
 ## ⭐ Getting started
 
@@ -15,11 +15,25 @@ Just adding the environment variables in sufficient to get started, but you addi
 
 ### Environment variables
 
-For GitHub Actions workflows, environment variables are stored as repository secrets (See [Creating and storing encrypted secrets](https://docs.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets)). Locally, they are loaded from a `.env` file.
+Locally, environment variables are loaded from a `.env` file.
 
 - `FIREBASE_SERVICE_ACCOUNT_KEY` is the Firebase Service Account Key in JSON format
 - `FIREBASE_DATABASE_URL` is the Firebase Cloud Firestore database URL, e.g., https://example.firebaseio.com
 - `SLACK_WEBHOOK_KEY` is the "key" part of a Slack webhook URL, e.g., the "KEY" in https://hooks.slack.com/services/KEY
+
+### Deployment
+
+Run the script using `ts-node`:
+
+```bash
+npm run run
+```
+
+Compile TypeScript and run Node.js script:
+
+```bash
+npm run build && npm run start
+```
 
 ### Config File
 
