@@ -23,8 +23,19 @@ const subscribers = firestore().collection("subscribers-v2");
 const realEstate = firestore().collection("real-estate-managers");
 
 /** Post a message to a Slack channel */
-export const postToSlack = async (data: any) => {
+export const postToSlack = async (data: any, id: string) => {
   if (data.dev) return;
+  console.log("Triggering webhook");
+  const perChunk = 10;
+  const inputArray = Object.keys(data);
+  const result = inputArray.reduce<string[][]>((resultArray, item, index) => {
+    const chunkIndex = Math.floor(index / perChunk);
+    if (!resultArray[chunkIndex]) {
+      resultArray[chunkIndex] = [];
+    }
+    resultArray[chunkIndex].push(item);
+    return resultArray;
+  }, []);
   const payload = {
     username: "Koj Bot",
     icon_url:
@@ -39,9 +50,9 @@ export const postToSlack = async (data: any) => {
             : `*${data.name || "A user"}* just signed up!`,
         },
       },
-      {
+      ...result.map((item) => ({
         type: "section",
-        fields: Object.keys(data).map((key) => ({
+        fields: item.map((key) => ({
           type: "mrkdwn",
           text: `*${key}* \n ${
             Array.isArray(data[key])
@@ -55,13 +66,26 @@ export const postToSlack = async (data: any) => {
               : data[key]
           }`,
         })),
-      },
+      })),
+      data.realEstate
+        ? undefined
+        : {
+            type: "section",
+            text: {
+              type: "mrkdwn",
+              text: `Full lead details: https://koj.co/en-ch/admin/customers/${id}`,
+            },
+          },
     ],
   };
-  await axios.post(
-    `https://hooks.slack.com/services/${SLACK_WEBHOOK_KEY}`,
-    payload
-  );
+  try {
+    await axios.post(
+      `https://hooks.slack.com/services/${SLACK_WEBHOOK_KEY}`,
+      payload
+    );
+  } catch (error) {
+    console.log(JSON.stringify(payload, null, 2));
+  }
 };
 
 const sent: string[] = [];
@@ -77,7 +101,7 @@ const firebaseSlack = async () => {
         if (doc.id && !sent.includes(doc.id) && data.email && !data.dev) {
           sent.push(doc.id);
           console.log("Sending", doc.id);
-          postToSlack(data);
+          postToSlack(data, doc.id);
         }
       });
     });
