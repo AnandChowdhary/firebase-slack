@@ -52,3 +52,12 @@ The [`firebase-slack.yml`](./firebase-slack.yml) file is used to add key-value p
 - Code: [MIT](./LICENSE) © [Koj](https://joinkoj.com)
 - "Firebase" is a trademark of Google LLC
 - "Slack" is a trademark of Slack Technologies, Inc.
+
+<p align="center">
+  <a href="https://koj.co">
+    <img width="44" alt="Koj" src="https://kojcdn.com/v1593890002/website-v2/logo_mcxuwq.svg">
+  </a>
+</p>
+<p align="center">
+  <sub>An open source project by <a href="https://koj.co">Koj</a>. <br> <a href="https://koj.co">Furnish your home in style, for as low as CHF175/month →</a></sub>
+</p>
