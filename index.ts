@@ -26,16 +26,6 @@ const realEstate = firestore().collection("real-estate-managers");
 export const postToSlack = async (data: any, id: string) => {
   if (data.dev) return;
   console.log("Triggering webhook");
-  const perChunk = 10;
-  const inputArray = Object.keys(data);
-  const result = inputArray.reduce<string[][]>((resultArray, item, index) => {
-    const chunkIndex = Math.floor(index / perChunk);
-    if (!resultArray[chunkIndex]) {
-      resultArray[chunkIndex] = [];
-    }
-    resultArray[chunkIndex].push(item);
-    return resultArray;
-  }, []);
   const payload = {
     username: "Koj Bot",
     icon_url:
@@ -46,27 +36,18 @@ export const postToSlack = async (data: any, id: string) => {
         text: {
           type: "mrkdwn",
           text: data.realEstate
-            ? `Real estate manager lead from *${data.name || "a user"}*`
-            : `*${data.name || "A user"}* just signed up!`,
+            ? `Real estate manager lead from *${data.name || "a user"}* (${
+                data.email
+              })`
+            : `*${data.name || "A user"}* (${
+                data.email
+              }) just signed up for a *${
+                data.numberOfRooms
+              }-room* apartment in *${data.locationName}* for a period of *${
+                data.period * 12
+              } months* with a budget of *${data.budget} CHF/month*.`,
         },
       },
-      ...result.map((item) => ({
-        type: "section",
-        fields: item.map((key) => ({
-          type: "mrkdwn",
-          text: `*${key}* \n ${
-            Array.isArray(data[key])
-              ? data[key].join(", ")
-              : data[key]._seconds
-              ? new Date(data[key]._seconds * 1000).toLocaleString("en-CH", {
-                  timeZone: "Europe/Zurich",
-                })
-              : typeof data[key] === "object"
-              ? JSON.stringify(data[key])
-              : data[key]
-          }`,
-        })),
-      })),
       data.realEstate
         ? undefined
         : {
