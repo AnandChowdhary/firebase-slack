@@ -41,7 +41,7 @@
     "typescript": "^3.9.6"
   },
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "dotenv": "^8.2.0",
     "firebase-admin": "^8.13.0",
     "js-yaml": "^3.14.0"
